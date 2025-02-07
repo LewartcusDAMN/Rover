@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.Random;
 import javax.swing.JPanel;
 
@@ -23,6 +24,7 @@ public class GamePanel extends JPanel implements Runnable{
     public static KeyHandler key = new KeyHandler();
     private Menu menu;
     public static Player player;
+    public static Rectangle floor;
 
     // Regular fields
     public int gamestate;
@@ -37,10 +39,13 @@ public class GamePanel extends JPanel implements Runnable{
         this.setBackground(Color.DARK_GRAY);
         this.addMouseListener(mouse);
         this.addMouseWheelListener(mouse);
+        this.addKeyListener(key);
         this.setFocusable(true);
 
         player = new Player((GamePanel.SCREEN_WIDTH/2), (GamePanel.SCREEN_HEIGHT/2));
         this.gamestate = 0;
+
+        floor = new Rectangle(0, 400, SCREEN_WIDTH, 200);
     }
 
     public void startGameThread(){// Starts the game loop

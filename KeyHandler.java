@@ -12,7 +12,7 @@ public class KeyHandler implements KeyListener {
     public boolean[] keys;         // keeps track of all keys (true if pressed, false if released)
     public boolean[] previous;      // tracks the state of keys in previous frame
 
-    public boolean[] getKeys(){return this.keys;}
+    public boolean left;
 
     // constructor--> init key arrays and WASD tracking map
     public KeyHandler(){  

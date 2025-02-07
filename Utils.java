@@ -19,7 +19,7 @@ public class Utils {
     private static Random rand = new Random();
 
     // Image objects for textures
-    public static final Image mainscreen = new ImageIcon("Farming_Game/assets/img/mainscreen.jpg").getImage().getScaledInstance(GamePanel.SCREEN_WIDTH, GamePanel.SCREEN_HEIGHT, Image.SCALE_DEFAULT);
+    public static final Image bingus = new ImageIcon("assets/img/Bingus.jpg").getImage().getScaledInstance(25, 25, Image.SCALE_DEFAULT);
     
     // public static final BufferedImage[][] walkSprite = loadPlayer("Farming_Game/assets/player/walk.png", 8, 4);
     // public static final BufferedImage[][] idleSprite = loadPlayer("Farming_Game/assets/player/idle.png", 4, 4);
