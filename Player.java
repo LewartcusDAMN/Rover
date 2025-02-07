@@ -61,14 +61,14 @@ public class Player {
             this.falling = true;
         }
 
-        if (colliding_with_floor()){
+        if (colliding_platform()){
             this.falling = false;
             this.vel[1] = 0;
             this.pos[1] = GamePanel.floor.y -1;
         }
     }
 
-    public boolean colliding_with_floor(){
+    public boolean colliding_platform(){
         return GamePanel.floor.contains(pos[0], pos[1]);
     }
 

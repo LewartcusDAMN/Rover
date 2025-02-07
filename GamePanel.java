@@ -29,6 +29,7 @@ public class GamePanel extends JPanel implements Runnable{
     // Regular fields
     public int gamestate;
     private final int FPS = 60;
+    public static int[] offset;
 
     public GamePanel() {// Constructor
         this.thread = new Thread();
@@ -44,6 +45,7 @@ public class GamePanel extends JPanel implements Runnable{
 
         player = new Player((GamePanel.SCREEN_WIDTH/2), (GamePanel.SCREEN_HEIGHT/2));
         this.gamestate = 0;
+        offset = new int[]{player.pos[0] - SCREEN_WIDTH/2, player.pos[1] - SCREEN_HEIGHT/2};
 
         floor = new Rectangle(0, 400, SCREEN_WIDTH, 200);
     }
@@ -96,6 +98,9 @@ public class GamePanel extends JPanel implements Runnable{
         switch (gamestate) {
             case 0 -> {// menu
                 player.draw(g2D);
+                g2D.setColor(Color.gray);
+                g2D.fill(floor);
+                Utils.renderText(g2D, "BINGOID","assets/MinimalPixelFont.ttf", 100, 255, 255, 255, 200, 150);
             }
         }
         g2D.dispose();

@@ -76,7 +76,7 @@ public class Utils {
         }
     }
 
-    public static void renderText(Graphics g, String font_file, int font_size, int red, int green, int blue, String text, int x, int y){
+    public static void renderText(Graphics g, String text, String font_file, int font_size, int red, int green, int blue, int x, int y){
         try{
             new_font = loadFont(font_file, font_size);// try loading the font
         } catch(FontFormatException ex){
