@@ -9,7 +9,7 @@ import java.awt.event.KeyListener;
 
 // Keeps track of key interactions
 public class KeyHandler implements KeyListener {
-    private boolean[] keys;         // keeps track of all keys (true if pressed, false if released)
+    public boolean[] keys;         // keeps track of all keys (true if pressed, false if released)
     public boolean[] previous;      // tracks the state of keys in previous frame
 
     public boolean[] getKeys(){return this.keys;}

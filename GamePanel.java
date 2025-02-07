@@ -13,21 +13,20 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
     // Constants
-    public static final int SCREEN_WIDTH = 800, SCREEN_HEIGHT = 800;
+    public static final int SCREEN_WIDTH = 800, SCREEN_HEIGHT = 600;
 
     // Class objects
     private Thread thread;
     private static Random rand;
 
-    private KeyHandler kH = new KeyHandler();
-    private MouseHandler mouse = new MouseHandler();
+    public static MouseHandler mouse = new MouseHandler();
+    public static KeyHandler key = new KeyHandler();
     private Menu menu;
     public static Player player;
 
     // Regular fields
     public int gamestate;
     private final int FPS = 60;
-    public static boolean[] keys;
 
     public GamePanel() {// Constructor
         this.thread = new Thread();
@@ -36,13 +35,11 @@ public class GamePanel extends JPanel implements Runnable{
 
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.DARK_GRAY);
-        this.addKeyListener(kH);
         this.addMouseListener(mouse);
         this.addMouseWheelListener(mouse);
         this.setFocusable(true);
 
-        keys = kH.getKeys();
-        player = new Player((GamePanel.SCREEN_WIDTH/32), (GamePanel.SCREEN_WIDTH/32));
+        player = new Player((GamePanel.SCREEN_WIDTH/2), (GamePanel.SCREEN_HEIGHT/2));
         this.gamestate = 0;
     }
 
@@ -79,10 +76,10 @@ public class GamePanel extends JPanel implements Runnable{
 
         switch (gamestate){
             case 0 -> {// menu
-                System.out.println(mouse.pos[0] + " "+ mouse.pos[0]);
+                //System.out.println(mouse.pos[0] + " "+ mouse.pos[0]);
+                player.update();
             }
         }
-        kH.previous = keys.clone();
         mouse.previous = mouse.pressed;
     }
 
@@ -93,6 +90,7 @@ public class GamePanel extends JPanel implements Runnable{
 
         switch (gamestate) {
             case 0 -> {// menu
+                player.draw(g2D);
             }
         }
         g2D.dispose();
