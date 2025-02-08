@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JPanel;
 
@@ -24,7 +25,8 @@ public class GamePanel extends JPanel implements Runnable{
     public static KeyHandler key = new KeyHandler();
     private Menu menu;
     public static Player player;
-    public static Rectangle floor;
+    
+    public static ArrayList<Rectangle> platforms;
 
     // Regular fields
     public int gamestate;
@@ -47,7 +49,14 @@ public class GamePanel extends JPanel implements Runnable{
         this.gamestate = 0;
         offset = new int[]{player.pos[0] - SCREEN_WIDTH/2, player.pos[1] - SCREEN_HEIGHT/2};
 
-        floor = new Rectangle(0, 400, SCREEN_WIDTH, 200);
+        platforms = new ArrayList<>();
+        platforms.add(new Rectangle(0, 400, SCREEN_WIDTH, 200));
+        
+        platforms.add(new Rectangle(100, 370, 100, 20));
+        platforms.add(new Rectangle(150, 320, 100, 20));
+        
+        platforms.add(new Rectangle(200, 270, 100, 20));
+        platforms.add(new Rectangle(250, 220, 100, 20));
     }
 
     public void startGameThread(){// Starts the game loop
@@ -99,7 +108,9 @@ public class GamePanel extends JPanel implements Runnable{
             case 0 -> {// menu
                 player.draw(g2D);
                 g2D.setColor(Color.gray);
-                g2D.fill(floor);
+                for (Rectangle platform : platforms){
+                    g2D.fill(platform);
+                }
                 Utils.renderText(g2D, "BINGOID","assets/MinimalPixelFont.ttf", 100, 255, 255, 255, 200, 150);
             }
         }
