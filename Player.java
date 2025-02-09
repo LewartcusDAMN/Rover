@@ -48,7 +48,6 @@ public class Player {
     public void update()
     {
         this.angle = Math.atan2(GamePanel.mouse.pos[1] - this.pos[1], GamePanel.mouse.pos[0] - this.pos[0]);
-        System.out.printf("%f, %f, %f, %d \n", Math.toDegrees(angle), 10*Math.cos(angle), 10*Math.sin(angle), vel[1]);
         inputs();
         move();
         update_hitboxs();
@@ -69,10 +68,18 @@ public class Player {
         }
     }
     public void move(){
+        for (Repulsion repulsion : GamePanel.repulsions){
+            int[] repulsion_vel = repulsion.vel_update(this.pos[0], this.pos[1]);
+            this.vel[0] += repulsion_vel[0];
+            this.vel[1] += repulsion_vel[1];
+            this.pos[0] += repulsion_vel[0]/2;
+            this.pos[1] += repulsion_vel[1]/2;
+        }
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
 
         this.vel[0] *= 0.99;
+        
 
         if (this.jumping){
             falling = false;
@@ -85,10 +92,21 @@ public class Player {
             this.jumping = false;
             this.falling = true;
         }
-
         check_collision_platform();
-    }
 
+        if (pos[0] > GamePanel.SCREEN_WIDTH){
+            pos[0] = GamePanel.SCREEN_WIDTH;
+        }
+        if (pos[0] < 0){
+            pos[0] = 0;
+        }
+        if (pos[1] > 400){
+            pos[1] = 400;
+        }
+        if (pos[1] < 0){
+            pos[1] = 0;
+        }
+    }
 
 
     public void update_hitboxs(){
