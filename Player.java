@@ -68,18 +68,29 @@ public class Player {
         }
     }
     public void move(){
+        check_collision_platform();
         for (Repulsion repulsion : GamePanel.repulsions){
             int[] repulsion_vel = repulsion.vel_update(this.pos[0], this.pos[1]);
             this.vel[0] += repulsion_vel[0];
             this.vel[1] += repulsion_vel[1];
+            
             this.pos[0] += repulsion_vel[0]/2;
             this.pos[1] += repulsion_vel[1]/2;
         }
+        if (this.vel[0] > 20 || this.vel[0] < -20){
+            this.vel[0] = 20;
+        }
+        if (this.vel[1] > 20 || this.vel[1] < -20){
+            this.vel[1] = 20;
+        }
+        System.out.printf("%d, %d\n", vel[0], vel[1]);
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
 
         this.vel[0] *= 0.99;
-        
+        if (on_ground && this.vel[1] != 0){
+            this.vel[1] = 0;
+        }
 
         if (this.jumping){
             falling = false;
@@ -92,7 +103,6 @@ public class Player {
             this.jumping = false;
             this.falling = true;
         }
-        check_collision_platform();
 
         if (pos[0] > GamePanel.SCREEN_WIDTH){
             pos[0] = GamePanel.SCREEN_WIDTH;
@@ -121,7 +131,6 @@ public class Player {
                 intersection = true;
                 if (!jumping)
                 {
-                    this.vel[1] = 0;
                     this.pos[1] = platform.y - this.size/2 + 1;
                 }
             }

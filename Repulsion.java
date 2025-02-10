@@ -24,10 +24,10 @@ public class Repulsion {
         }
         switch (this.status) {
             case 1 -> {
-                this.radius += 2;
+                this.radius += 5;
             }
             case 0 -> {
-                this.radius -= 4;
+                this.radius -= 2;
             }
         }
     }
@@ -37,8 +37,8 @@ public class Repulsion {
         int vel_y = 0;
         int dist = (int)(Math.sqrt(Math.pow(obj_x - this.pos[0], 2) + Math.pow(obj_y - this.pos[1], 2)));
         if (dist <= this.radius){
-            vel_x = (obj_x - this.pos[0])/2;
-            vel_y = (obj_y - this.pos[1])/2;
+            vel_x = (obj_x - this.pos[0])/4;
+            vel_y = (obj_y - this.pos[1])/4;
         }
 
         return new int[]{vel_x, vel_y};
