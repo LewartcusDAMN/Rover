@@ -43,7 +43,7 @@ public class Player {
 
         g2D.setColor(new Color(255, 0, 0));
         g2D.drawLine(this.pos[0], this.pos[1], this.pos[0] + (int) (100*Math.cos(angle)), this.pos[1] + (int)(100*Math.sin(angle)));
-        //g2D.fill(bottom_hitbox);
+        g2D.fill(bottom_hitbox);
     }
     public void update()
     {
@@ -83,14 +83,11 @@ public class Player {
         if (this.vel[1] > 20 || this.vel[1] < -20){
             this.vel[1] = 20;
         }
-        System.out.printf("%d, %d\n", vel[0], vel[1]);
+        System.out.printf("%d\n", pos[1] - bottom_hitbox.y);
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
 
         this.vel[0] *= 0.99;
-        if (on_ground && this.vel[1] != 0){
-            this.vel[1] = 0;
-        }
 
         if (this.jumping){
             falling = false;
@@ -121,16 +118,19 @@ public class Player {
 
     public void update_hitboxs(){
         this.bottom_hitbox.x = this.pos[0] - this.size/2;
-        this.bottom_hitbox.y = this.pos[1];
+        this.bottom_hitbox.y = this.pos[1] + this.vel[1];
     }
     public void check_collision_platform(){
         boolean intersection = false;
         for (Rectangle platform : GamePanel.platforms){
-            if (colliding_top_platform(platform)){
-                this.on_ground = true;
+            if (this.bottom_hitbox.contains(platform)){
                 intersection = true;
                 if (!jumping)
                 {
+                    this.on_ground = true;
+                    if (this.vel[1] != 0){
+                        this.vel[1] = 0;
+                    }
                     this.pos[1] = platform.y - this.size/2 + 1;
                 }
             }
@@ -139,10 +139,12 @@ public class Player {
             this.on_ground = false;
         }
     }
-    public boolean colliding_top_platform(Rectangle platform){
+
+    // FIX please
+    public boolean colliding_with_platform(Rectangle platform){
         boolean hitting_top = false;
-        for (int i = platform.x; i < platform.x + platform.width; i ++){
-            if (this.bottom_hitbox.contains(i, platform.y)){
+        for (int i = this.pos[1]; i < this.pos[1] + this.vel[1]; i ++){
+            if (platform.intersects(new Rectangle(this.bottom_hitbox.x, this.bottom_hitbox.y + i, this.bottom_hitbox.width, this.bottom_hitbox.height))){
                 hitting_top = true;
             }
         }
