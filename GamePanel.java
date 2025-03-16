@@ -46,7 +46,7 @@ public class GamePanel extends JPanel implements Runnable{
         this.addKeyListener(key);
         this.setFocusable(true);
 
-        player = new Player((GamePanel.SCREEN_WIDTH/2), (GamePanel.SCREEN_HEIGHT/2));
+        player = new Player(250, 100);
         this.gamestate = 0;
         offset = new int[]{player.pos[0] - SCREEN_WIDTH/2, player.pos[1] - SCREEN_HEIGHT/2};
 
@@ -60,7 +60,6 @@ public class GamePanel extends JPanel implements Runnable{
         platforms.add(new Rectangle(250, 220, 100, 20));
 
         repulsions = new ArrayList<>();
-        repulsions.add(new Repulsion(100, 450, 370));
     }
 
     public void startGameThread(){// Starts the game loop
@@ -118,7 +117,6 @@ public class GamePanel extends JPanel implements Runnable{
 
         switch (gamestate) {
             case 0 -> {// 
-                player.draw(g2D);
 
                 g2D.setColor(Color.gray);
                 for (Rectangle platform : platforms){
@@ -129,8 +127,13 @@ public class GamePanel extends JPanel implements Runnable{
                     repulsion.draw(g2D);
                 }
                 Utils.renderText(g2D, "BINGOID","assets/MinimalPixelFont.ttf", 100, 255, 255, 255, 200, 150);
+
+                
+                player.draw(g2D);
             }
         }
+        
+        g2D.drawImage(Utils.crosshair, mouse.pos[0] - 25, mouse.pos[1] - 25, null);
         g2D.dispose();
     }
 }

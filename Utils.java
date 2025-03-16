@@ -21,6 +21,7 @@ public class Utils {
     // Image objects for textures
     public static final Image bingus = new ImageIcon("assets/img/Bingus.jpg").getImage().getScaledInstance(25, 25, Image.SCALE_DEFAULT);
     public static final Image revolver = new ImageIcon("assets/img/revolver.jpg").getImage().getScaledInstance(25, 25, Image.SCALE_DEFAULT);
+    public static final Image crosshair = new ImageIcon("assets/img/crosshair.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT);
     
     // public static final BufferedImage[][] walkSprite = loadPlayer("Farming_Game/assets/player/walk.png", 8, 4);
     // public static final BufferedImage[][] idleSprite = loadPlayer("Farming_Game/assets/player/idle.png", 4, 4);

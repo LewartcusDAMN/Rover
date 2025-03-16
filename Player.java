@@ -15,7 +15,7 @@ public class Player {
     public int[] pos;           // current pos of player
     public int[] vel;
     private int size;
-    private Rectangle bottom_hitbox;
+    private Rectangle platform_hitbox;
 
     private boolean jumping, falling, on_ground;
     private double angle;
@@ -28,7 +28,7 @@ public class Player {
         this.pos = new int[]{px, py};
         this.vel = new int[]{0, 0};
         this.size = 25;
-        bottom_hitbox = new Rectangle(px - this.size/2, py, this.size, this.size/2);
+        platform_hitbox = new Rectangle(px - this.size/2, py, this.size, this.size - this.size/2);
 
         this.falling = true;
         this.angle = Math.atan2(GamePanel.mouse.pos[1] - this.pos[1], GamePanel.mouse.pos[0] - this.pos[0]);
@@ -43,7 +43,7 @@ public class Player {
 
         g2D.setColor(new Color(255, 0, 0));
         g2D.drawLine(this.pos[0], this.pos[1], this.pos[0] + (int) (100*Math.cos(angle)), this.pos[1] + (int)(100*Math.sin(angle)));
-        g2D.fill(bottom_hitbox);
+        g2D.fill(platform_hitbox);
     }
     public void update()
     {
@@ -68,7 +68,7 @@ public class Player {
         }
     }
     public void move(){
-        check_collision_platform();
+        check_collision_with_platform();
         for (Repulsion repulsion : GamePanel.repulsions){
             int[] repulsion_vel = repulsion.vel_update(this.pos[0], this.pos[1]);
             this.vel[0] += repulsion_vel[0];
@@ -83,12 +83,16 @@ public class Player {
         if (this.vel[1] > 20 || this.vel[1] < -20){
             this.vel[1] = 20;
         }
-        System.out.printf("%d\n", pos[1] - bottom_hitbox.y);
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
 
         this.vel[0] *= 0.99;
 
+        // Jumping vs Falling logic
+        //
+        if (!this.on_ground){
+            this.falling = true;
+        }
         if (this.jumping){
             falling = false;
             this.vel[1] --;
@@ -96,19 +100,21 @@ public class Player {
         if (this.falling){
             this.vel[1] ++;
         }
-        if (this.vel[1] <= -12){
+        if (this.jumping && this.vel[1] <= -12){
             this.jumping = false;
             this.falling = true;
         }
 
+        // player remains on screen
+        //
         if (pos[0] > GamePanel.SCREEN_WIDTH){
             pos[0] = GamePanel.SCREEN_WIDTH;
         }
         if (pos[0] < 0){
             pos[0] = 0;
         }
-        if (pos[1] > 400){
-            pos[1] = 400;
+        if (pos[1] > GamePanel.SCREEN_HEIGHT){
+            pos[1] = GamePanel.SCREEN_HEIGHT;
         }
         if (pos[1] < 0){
             pos[1] = 0;
@@ -117,17 +123,18 @@ public class Player {
 
 
     public void update_hitboxs(){
-        this.bottom_hitbox.x = this.pos[0] - this.size/2;
-        this.bottom_hitbox.y = this.pos[1] + this.vel[1];
+        this.platform_hitbox.x = this.pos[0] - this.size/2;
+        this.platform_hitbox.y = this.pos[1];
     }
-    public void check_collision_platform(){
+    public void check_collision_with_platform(){
         boolean intersection = false;
         for (Rectangle platform : GamePanel.platforms){
-            if (this.bottom_hitbox.contains(platform)){
+            
+            if (platform.intersects(this.platform_hitbox)){
                 intersection = true;
-                if (!jumping)
-                {
+                if (this.vel[1] >= 0){
                     this.on_ground = true;
+                    this.falling = false;
                     if (this.vel[1] != 0){
                         this.vel[1] = 0;
                     }
@@ -135,19 +142,9 @@ public class Player {
                 }
             }
         }
+        System.out.println(jumping + ", " + falling + ", " + on_ground);
         if (!intersection){
             this.on_ground = false;
         }
-    }
-
-    // FIX please
-    public boolean colliding_with_platform(Rectangle platform){
-        boolean hitting_top = false;
-        for (int i = this.pos[1]; i < this.pos[1] + this.vel[1]; i ++){
-            if (platform.intersects(new Rectangle(this.bottom_hitbox.x, this.bottom_hitbox.y + i, this.bottom_hitbox.width, this.bottom_hitbox.height))){
-                hitting_top = true;
-            }
-        }
-        return hitting_top;
     }
 }
