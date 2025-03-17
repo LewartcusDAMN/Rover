@@ -19,9 +19,10 @@ public class Utils {
     private static Random rand = new Random();
 
     // Image objects for textures
-    public static final Image bingus = new ImageIcon("assets/img/Bingus.jpg").getImage().getScaledInstance(25, 25, Image.SCALE_DEFAULT);
+    public static final Image black_king = new ImageIcon("assets/img/king.jpg").getImage().getScaledInstance(25, 25, Image.SCALE_DEFAULT);
     public static final Image revolver = new ImageIcon("assets/img/revolver.jpg").getImage().getScaledInstance(25, 25, Image.SCALE_DEFAULT);
     public static final Image crosshair = new ImageIcon("assets/img/crosshair.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT);
+    public static final Image bullet = new ImageIcon("assets/img/bullet.jpg").getImage().getScaledInstance(10, 10, Image.SCALE_DEFAULT);
     
     // public static final BufferedImage[][] walkSprite = loadPlayer("Farming_Game/assets/player/walk.png", 8, 4);
     // public static final BufferedImage[][] idleSprite = loadPlayer("Farming_Game/assets/player/idle.png", 4, 4);
@@ -106,9 +107,9 @@ public class Utils {
         double ang = Math.atan2(components[1], components[0]);// tan inverse of the y over the x
         return new double[]{magnitude, ang};
     }
-    public static double[] toComponent(double[] vector){
+    public static int[] toComponent(double[] vector){
         double x_comp = vector[0]*Math.cos(vector[1]);// x component of the vector is the mag times the cos of theta
         double y_comp = vector[0]*Math.sin(vector[1]);// y component of the vector is the mag times the sin of theta
-        return new double[]{x_comp, y_comp};
+        return new int[]{(int)x_comp, (int)y_comp};
     }
 }

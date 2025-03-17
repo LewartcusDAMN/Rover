@@ -11,23 +11,22 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
-public class Player {
-    public int[] pos;           // current pos of player
-    public int[] vel;
-    private int size;
+public class Player extends Entity{
     private Rectangle platform_hitbox;
 
     private boolean jumping, falling, on_ground;
-    private double angle;
+    public double angle;
 
-    private Random rand;    
+    private final Random rand;    
 
     // Constuctor 
     public Player(int px, int py){
+        super(new int[]{px, py}, new int[]{0, 0}, 25);
 
         this.pos = new int[]{px, py};
         this.vel = new int[]{0, 0};
         this.size = 25;
+
         platform_hitbox = new Rectangle(px - this.size/2, py, this.size, this.size - this.size/2);
 
         this.falling = true;
@@ -39,7 +38,7 @@ public class Player {
     
     public void draw(Graphics2D g2D){
         g2D.setColor(new Color(255));
-        g2D.drawImage(Utils.bingus, pos[0] - size/2, pos[1] - size/2, null);
+        g2D.drawImage(Utils.black_king, pos[0] - size/2, pos[1] - size/2, null);
 
         g2D.setColor(new Color(255, 0, 0));
         g2D.drawLine(this.pos[0], this.pos[1], this.pos[0] + (int) (100*Math.cos(angle)), this.pos[1] + (int)(100*Math.sin(angle)));
@@ -70,31 +69,29 @@ public class Player {
     public void move(){
         check_collision_with_platform();
         for (Repulsion repulsion : GamePanel.repulsions){
-            int[] repulsion_vel = repulsion.vel_update(this.pos[0], this.pos[1]);
-            this.vel[0] += repulsion_vel[0];
-            this.vel[1] += repulsion_vel[1];
-            
-            this.pos[0] += repulsion_vel[0]/2;
-            this.pos[1] += repulsion_vel[1]/2;
+            repulsion.obj_vel_change(this);
         }
+
+        // speed cap
         if (this.vel[0] > 20 || this.vel[0] < -20){
             this.vel[0] = 20;
         }
         if (this.vel[1] > 20 || this.vel[1] < -20){
             this.vel[1] = 20;
         }
+        // pos change
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
 
+        // vel change
         this.vel[0] *= 0.99;
 
         // Jumping vs Falling logic
-        //
         if (!this.on_ground){
             this.falling = true;
         }
         if (this.jumping){
-            falling = false;
+            this.falling = false;
             this.vel[1] --;
         } 
         if (this.falling){
@@ -106,18 +103,17 @@ public class Player {
         }
 
         // player remains on screen
-        //
-        if (pos[0] > GamePanel.SCREEN_WIDTH){
-            pos[0] = GamePanel.SCREEN_WIDTH;
+        if (this.pos[0] > GamePanel.SCREEN_WIDTH){
+            this.pos[0] = GamePanel.SCREEN_WIDTH;
         }
-        if (pos[0] < 0){
-            pos[0] = 0;
+        if (this.pos[0] < 0){
+            this.pos[0] = 0;
         }
-        if (pos[1] > GamePanel.SCREEN_HEIGHT){
-            pos[1] = GamePanel.SCREEN_HEIGHT;
+        if (this.pos[1] > GamePanel.SCREEN_HEIGHT){
+            this.pos[1] = GamePanel.SCREEN_HEIGHT;
         }
-        if (pos[1] < 0){
-            pos[1] = 0;
+        if (this.pos[1] < 0){
+            this.pos[1] = 0;
         }
     }
 
@@ -142,7 +138,6 @@ public class Player {
                 }
             }
         }
-        System.out.println(jumping + ", " + falling + ", " + on_ground);
         if (!intersection){
             this.on_ground = false;
         }

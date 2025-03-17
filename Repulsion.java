@@ -10,7 +10,7 @@ public class Repulsion {
 
     public Repulsion(int max_size, int x, int y){
         this.pos = new int[]{x, y};
-        this.status = 1;
+        this.status = 1;// var for toggling the increase and decrease of the radius
         this.max_size = max_size;
     }
 
@@ -24,23 +24,20 @@ public class Repulsion {
         }
         switch (this.status) {
             case 1 -> {
-                this.radius += 5;
+                this.radius += this.max_size/10;
             }
             case 0 -> {
-                this.radius -= 2;
+                this.radius -= this.max_size/30;
             }
         }
     }
 
-    public int[] vel_update(int obj_x, int obj_y){
-        int vel_x = 0;
-        int vel_y = 0;
-        int dist = (int)(Math.sqrt(Math.pow(obj_x - this.pos[0], 2) + Math.pow(obj_y - this.pos[1], 2)));
+    public void obj_vel_change(Entity e){
+        int dist = (int)(Math.sqrt(Math.pow(e.pos[0] - this.pos[0], 2) + Math.pow(e.pos[1] - this.pos[1], 2)));
         if (dist <= this.radius){
-            vel_x = (obj_x - this.pos[0])/4;
-            vel_y = (obj_y - this.pos[1])/4;
+            double ang = Utils.toVector(new double[]{this.pos[0] - e.pos[0], this.pos[1] - e.pos[1]})[1];
+            e.vel[0] += this.max_size/10*Math.cos(ang + Math.PI);
+            e.vel[1] += this.max_size/10*Math.sin(ang + Math.PI);
         }
-
-        return new int[]{vel_x, vel_y};
     }
 }

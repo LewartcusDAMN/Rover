@@ -28,6 +28,7 @@ public class GamePanel extends JPanel implements Runnable{
     
     public static ArrayList<Rectangle> platforms;
     public static ArrayList<Repulsion> repulsions;
+    public static ArrayList<Bullet> bullets;
 
     // Regular fields
     public int gamestate;
@@ -60,6 +61,8 @@ public class GamePanel extends JPanel implements Runnable{
         platforms.add(new Rectangle(250, 220, 100, 20));
 
         repulsions = new ArrayList<>();
+
+        bullets = new ArrayList<>();
     }
 
     public void startGameThread(){// Starts the game loop
@@ -94,15 +97,26 @@ public class GamePanel extends JPanel implements Runnable{
         }
 
         switch (gamestate){
-            case 0 -> {// 
+            case 0 -> {
                 player.update();
-                if (mouse.left_click){
-                    repulsions.add(new Repulsion(100, mouse.pos[0], mouse.pos[1]));
+                if (mouse.left_click && !mouse.previous){
+                    bullets.add(new Bullet(player.pos[0], player.pos[1], 5, 10, player.angle));
                 }
                 for (int i = repulsions.size() - 1; i >= 0; i --){
                     repulsions.get(i).update();
                     if (repulsions.get(i).radius <= 0){
                         repulsions.remove(i);
+                    }
+                }
+                for (int i = bullets.size() - 1; i >=0; i --){
+                    bullets.get(i).update();
+                    if (bullets.get(i).off_screen()){
+                        bullets.remove(i);
+                    }
+                    for (Rectangle platform : platforms){
+                        if (bullets.get(i).hitbox.intersects(platform)){
+                            bullets.remove(i);
+                        }
                     }
                 }
             }
@@ -125,6 +139,10 @@ public class GamePanel extends JPanel implements Runnable{
 
                 for (Repulsion repulsion : repulsions){
                     repulsion.draw(g2D);
+                }
+
+                for (Bullet bullet : bullets){
+                    bullet.draw(g2D);
                 }
                 Utils.renderText(g2D, "BINGOID","assets/MinimalPixelFont.ttf", 100, 255, 255, 255, 200, 150);
 
