@@ -98,17 +98,19 @@ public class GamePanel extends JPanel implements Runnable{
 
         switch (gamestate){
             case 0 -> {
+                //Player
                 player.update();
                 if (mouse.left_click && !mouse.previous){
                     bullets.add(new Bullet(player.pos[0], player.pos[1], 5, 10, player.angle));
                 }
+                // Repulsions
                 for (int i = repulsions.size() - 1; i >= 0; i --){
                     repulsions.get(i).update();
                     if (repulsions.get(i).radius <= 0){
                         repulsions.remove(i);
                     }
                 }
-                //System.out.println();
+                // Bullets
                 for (int i = bullets.size() - 1; i >= 0; i --){
                     bullets.get(i).update();
                     if (bullets.get(i).off_screen()){
@@ -126,6 +128,7 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
         mouse.previous = mouse.pressed;
+        offset = new int[]{player.pos[0] - SCREEN_WIDTH/2, player.pos[1] - SCREEN_HEIGHT/2};
     }
 
     @Override
@@ -138,7 +141,7 @@ public class GamePanel extends JPanel implements Runnable{
 
                 g2D.setColor(Color.gray);
                 for (Rectangle platform : platforms){
-                    g2D.fill(platform);
+                    g2D.fillRect(platform.x - GamePanel.offset[0], platform.y - GamePanel.offset[1], platform.width, platform.height);
                 }
 
                 for (Repulsion repulsion : repulsions){
@@ -148,7 +151,7 @@ public class GamePanel extends JPanel implements Runnable{
                 for (Bullet bullet : bullets){
                     bullet.draw(g2D);
                 }
-                Utils.renderText(g2D, "BINGOID","assets/MinimalPixelFont.ttf", 100, 255, 255, 255, 200, 150);
+                Utils.renderText(g2D, "BINGOID","assets/MinimalPixelFont.ttf", 100, 255, 255, 255, 200 - offset[0], 150 - offset[1]);
 
                 
                 player.draw(g2D);

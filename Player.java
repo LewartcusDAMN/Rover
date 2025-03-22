@@ -38,15 +38,11 @@ public class Player extends Entity{
     
     public void draw(Graphics2D g2D){
         g2D.setColor(new Color(255));
-        g2D.drawImage(Utils.black_king, pos[0] - size/2, pos[1] - size/2, null);
-
-        g2D.setColor(new Color(255, 0, 0));
-        g2D.drawLine(this.pos[0], this.pos[1], this.pos[0] + (int) (100*Math.cos(angle)), this.pos[1] + (int)(100*Math.sin(angle)));
-        g2D.fill(platform_hitbox);
+        g2D.drawImage(Utils.black_king, pos[0] - size/2 - GamePanel.offset[0], pos[1] - size/2 - GamePanel.offset[1], null);
     }
     public void update()
     {
-        this.angle = Math.atan2(GamePanel.mouse.pos[1] - this.pos[1], GamePanel.mouse.pos[0] - this.pos[0]);
+        this.angle = Math.atan2(GamePanel.mouse.pos[1] - GamePanel.SCREEN_HEIGHT/2, GamePanel.mouse.pos[0] - GamePanel.SCREEN_WIDTH/2);
         inputs();
         move();
         update_hitboxs();
