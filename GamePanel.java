@@ -104,7 +104,6 @@ public class GamePanel extends JPanel implements Runnable{
                 }
                 for (int i = repulsions.size() - 1; i >= 0; i --){
                     repulsions.get(i).update();
-                    System.out.println(repulsions.get(i).radius);
                     if (repulsions.get(i).radius <= 0){
                         repulsions.remove(i);
                     }
