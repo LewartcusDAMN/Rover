@@ -104,18 +104,23 @@ public class GamePanel extends JPanel implements Runnable{
                 }
                 for (int i = repulsions.size() - 1; i >= 0; i --){
                     repulsions.get(i).update();
+                    System.out.println(repulsions.get(i).radius);
                     if (repulsions.get(i).radius <= 0){
                         repulsions.remove(i);
                     }
                 }
-                for (int i = bullets.size() - 1; i >=0; i --){
+                //System.out.println();
+                for (int i = bullets.size() - 1; i >= 0; i --){
                     bullets.get(i).update();
                     if (bullets.get(i).off_screen()){
                         bullets.remove(i);
+                        continue;
                     }
                     for (Rectangle platform : platforms){
                         if (bullets.get(i).hitbox.intersects(platform)){
+                            repulsions.add(new Repulsion(40, bullets.get(i).pos[0], bullets.get(i).pos[1]));
                             bullets.remove(i);
+                            break;
                         }
                     }
                 }

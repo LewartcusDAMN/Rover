@@ -24,10 +24,10 @@ public class Repulsion {
         }
         switch (this.status) {
             case 1 -> {
-                this.radius += this.max_size/10;
+                this.radius += (int)(this.max_size/10);
             }
             case 0 -> {
-                this.radius -= this.max_size/30;
+                this.radius -= (int)(this.max_size/30);
             }
         }
     }

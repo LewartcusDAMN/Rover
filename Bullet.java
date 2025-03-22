@@ -15,9 +15,8 @@ public class Bullet extends Entity{
 
     public void draw(Graphics2D g2D){
         g2D.setColor(new Color(255,255,0));
-        g2D.fillRect(this.pos[0], this.pos[1], size, size);
-    }
-    
+        g2D.drawImage(Utils.bullet, this.pos[0], this.pos[1], null);
+    } 
     public void update(){
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
@@ -26,7 +25,7 @@ public class Bullet extends Entity{
     }
 
     public boolean off_screen(){
-        return this.pos[1] < 0 && this.pos[1] > GamePanel.SCREEN_HEIGHT && this.pos[0] < 0 && this.pos[0] > GamePanel.SCREEN_WIDTH;
+        return this.pos[1] < 0 || this.pos[1] > GamePanel.SCREEN_HEIGHT || this.pos[0] < 0 || this.pos[0] > GamePanel.SCREEN_WIDTH;
     }
 }
 
