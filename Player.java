@@ -27,7 +27,7 @@ public class Player extends Entity{
         this.vel = new int[]{0, 0};
         this.size = 25;
 
-        platform_hitbox = new Rectangle(px - this.size/2, py, this.size, this.size - this.size/2);
+        platform_hitbox = new Rectangle(px - this.size/2, py, this.size, this.size - this.size/2 + 1);
 
         this.falling = true;
         this.angle = Math.atan2(GamePanel.mouse.pos[1] - this.pos[1], GamePanel.mouse.pos[0] - this.pos[0]);
@@ -43,9 +43,13 @@ public class Player extends Entity{
         draw_gui(g2D);
     }
     public void draw_gui(Graphics2D g2D){
-        for (int i = 1; i < stamina; i ++){
+        for (int i = 1; i <= stamina; i ++){
             g2D.setColor(new Color(0, 255, 255));
             g2D.fillRect(100 * i, 70, 75, 30);
+        }
+        for (int i = 1; i <= 3; i ++){
+            g2D.setColor(new Color(0));
+            g2D.drawRect(100 * i, 70, 75, 30);
         }
     }
     public void update()
@@ -58,7 +62,7 @@ public class Player extends Entity{
     }
 
     public void regen_stamina(){
-        if (this.stamina < 3){
+        if (this.stamina < 3 && !GamePanel.key.keys[KeyEvent.VK_CONTROL]){
             this.stamina += 0.01;
         }
     }
@@ -78,6 +82,14 @@ public class Player extends Entity{
             vel[0] += 30*Math.cos(angle);
             vel[1] += 30*Math.sin(angle);
             this.stamina --;
+        }
+        if (GamePanel.key.keys[KeyEvent.VK_CONTROL]){// slide
+            if (Math.toDegrees(angle) >= -90 && Math.toDegrees(angle) <= 90){// right
+                vel[0] = 22;
+            }
+            else {
+                vel[0] = -22;
+            }
         }
     }
     public void move(){
@@ -153,7 +165,7 @@ public class Player extends Entity{
                     if (this.vel[1] != 0){
                         this.vel[1] = 0;
                     }
-                    this.pos[1] = platform.y - this.size/2 + 1;
+                    this.pos[1] = platform.y - this.size/2 - 1;
                 }
             }
         }
