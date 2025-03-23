@@ -113,10 +113,6 @@ public class GamePanel extends JPanel implements Runnable{
                 // Bullets
                 for (int i = bullets.size() - 1; i >= 0; i --){
                     bullets.get(i).update();
-                    if (bullets.get(i).off_screen()){
-                        bullets.remove(i);
-                        continue;
-                    }
                     for (Rectangle platform : platforms){
                         if (bullets.get(i).hitbox.intersects(platform)){
                             repulsions.add(new Repulsion(40, bullets.get(i).pos[0], bullets.get(i).pos[1]));
@@ -128,6 +124,7 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
         mouse.previous = mouse.pressed;
+        key.previous = key.keys.clone();
         offset = new int[]{player.pos[0] - SCREEN_WIDTH/2, player.pos[1] - SCREEN_HEIGHT/2};
     }
 
@@ -152,7 +149,6 @@ public class GamePanel extends JPanel implements Runnable{
                     bullet.draw(g2D);
                 }
                 Utils.renderText(g2D, "BINGOID","assets/MinimalPixelFont.ttf", 100, 255, 255, 255, 200 - offset[0], 150 - offset[1]);
-
                 
                 player.draw(g2D);
             }

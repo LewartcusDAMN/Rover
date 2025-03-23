@@ -30,7 +30,7 @@ public class KeyHandler implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e){    // sets key index to false if released
         int key = e.getKeyCode();
-            keys[key] = false; 
+        keys[key] = false; 
     }
 
     @Override

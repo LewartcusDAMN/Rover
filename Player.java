@@ -1,5 +1,5 @@
 /*Player.java
- * Angie Huang & Lucas Seto
+ * Lucas Seto
  * 
  * The player and its interactions
  *      -
@@ -15,7 +15,7 @@ public class Player extends Entity{
     private Rectangle platform_hitbox;
 
     private boolean jumping, falling, on_ground;
-    public double angle;
+    public double angle, stamina;
 
     private final Random rand;    
 
@@ -32,6 +32,7 @@ public class Player extends Entity{
         this.falling = true;
         this.angle = Math.atan2(GamePanel.mouse.pos[1] - this.pos[1], GamePanel.mouse.pos[0] - this.pos[0]);
 
+        this.stamina = 3.01;
         this.rand = new Random();
     }
 
@@ -39,6 +40,13 @@ public class Player extends Entity{
     public void draw(Graphics2D g2D){
         g2D.setColor(new Color(255));
         g2D.drawImage(Utils.black_king, pos[0] - size/2 - GamePanel.offset[0], pos[1] - size/2 - GamePanel.offset[1], null);
+        draw_gui(g2D);
+    }
+    public void draw_gui(Graphics2D g2D){
+        for (int i = 1; i < stamina; i ++){
+            g2D.setColor(new Color(0, 255, 255));
+            g2D.fillRect(100 * i, 70, 75, 30);
+        }
     }
     public void update()
     {
@@ -46,9 +54,14 @@ public class Player extends Entity{
         inputs();
         move();
         update_hitboxs();
+        regen_stamina();
     }
 
-
+    public void regen_stamina(){
+        if (this.stamina < 3){
+            this.stamina += 0.01;
+        }
+    }
 
     public void inputs(){
         if (this.vel[0] < 10 && this.vel[0] > -10){
@@ -61,6 +74,11 @@ public class Player extends Entity{
                 this.jumping = true;
             }
         }
+        if (GamePanel.key.keys[KeyEvent.VK_SHIFT] && !GamePanel.key.previous[KeyEvent.VK_SHIFT] && this.stamina >= 1){// dash
+            vel[0] += 30*Math.cos(angle);
+            vel[1] += 30*Math.sin(angle);
+            this.stamina --;
+        }
     }
     public void move(){
         check_collision_with_platform();
@@ -69,11 +87,17 @@ public class Player extends Entity{
         }
 
         // speed cap
-        if (this.vel[0] > 20 || this.vel[0] < -20){
+        if (this.vel[0] > 20){
             this.vel[0] = 20;
         }
-        if (this.vel[1] > 20 || this.vel[1] < -20){
+        if (this.vel[1] > 20){
             this.vel[1] = 20;
+        }
+        if (this.vel[0] < -20){
+            this.vel[0] = -20;
+        }
+        if (this.vel[1] < -20){
+            this.vel[1] = -20;
         }
         // pos change
         this.pos[0] += this.vel[0];
@@ -112,7 +136,6 @@ public class Player extends Entity{
             this.pos[1] = 0;
         }
     }
-
 
     public void update_hitboxs(){
         this.platform_hitbox.x = this.pos[0] - this.size/2;

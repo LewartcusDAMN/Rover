@@ -20,9 +20,5 @@ public class Bullet extends Entity{
         this.hitbox.x = this.pos[0];
         this.hitbox.y = this.pos[1];
     }
-
-    public boolean off_screen(){
-        return this.pos[1] < 0 || this.pos[1] > GamePanel.SCREEN_HEIGHT || this.pos[0] < 0 || this.pos[0] > GamePanel.SCREEN_WIDTH;
-    }
 }
 
