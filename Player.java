@@ -16,6 +16,7 @@ public class Player extends Entity{
 
     private boolean jumping, falling, on_ground;
     public double angle, stamina;
+    private int sliding_dir;
 
     private final Random rand;    
 
@@ -26,6 +27,7 @@ public class Player extends Entity{
         this.pos = new int[]{px, py};
         this.vel = new int[]{0, 0};
         this.size = 25;
+        sliding_dir = 1;
 
         platform_hitbox = new Rectangle(px - this.size/2, py, this.size, this.size - this.size/2 + 1);
 
@@ -84,12 +86,14 @@ public class Player extends Entity{
             this.stamina --;
         }
         if (GamePanel.key.keys[KeyEvent.VK_CONTROL]){// slide
-            if (Math.toDegrees(angle) >= -90 && Math.toDegrees(angle) <= 90){// right
-                vel[0] = 22;
-            }
-            else {
-                vel[0] = -22;
-            }
+            if (GamePanel.key.keys[KeyEvent.VK_CONTROL] && !GamePanel.key.previous[KeyEvent.VK_CONTROL]){
+                if (Math.toDegrees(angle) >= -90 && Math.toDegrees(angle) <= 90){
+                    this.sliding_dir = 1;
+                } else {
+                    this.sliding_dir = -1;
+                }
+            } 
+            this.vel[0] = 15 * this.sliding_dir;
         }
     }
     public void move(){
