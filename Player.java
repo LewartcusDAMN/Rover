@@ -47,7 +47,7 @@ public class Player extends Entity{
     public void draw_gui(Graphics2D g2D){
         for (int i = 1; i <= stamina; i ++){
             g2D.setColor(new Color(0, 255, 255));
-            g2D.fillRect(100 * i, 70, 75, 30);
+            g2D.fillRect(100 * i, 70, (int)(75*(this.stamina/10)), 30);
         }
         for (int i = 1; i <= 3; i ++){
             g2D.setColor(new Color(0));
@@ -85,7 +85,7 @@ public class Player extends Entity{
             vel[1] += 30*Math.sin(angle);
             this.stamina --;
         }
-        if (GamePanel.key.keys[KeyEvent.VK_CONTROL]){// slide
+        if (GamePanel.key.keys[KeyEvent.VK_CONTROL] && this.on_ground){// slide
             if (GamePanel.key.keys[KeyEvent.VK_CONTROL] && !GamePanel.key.previous[KeyEvent.VK_CONTROL]){
                 if (Math.toDegrees(angle) >= -90 && Math.toDegrees(angle) <= 90){
                     this.sliding_dir = 1;
@@ -115,6 +115,7 @@ public class Player extends Entity{
         if (this.vel[1] < -20){
             this.vel[1] = -20;
         }
+
         // pos change
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
@@ -136,20 +137,6 @@ public class Player extends Entity{
         if (this.jumping && this.vel[1] <= -12){
             this.jumping = false;
             this.falling = true;
-        }
-
-        // player remains on screen
-        if (this.pos[0] > GamePanel.SCREEN_WIDTH){
-            this.pos[0] = GamePanel.SCREEN_WIDTH;
-        }
-        if (this.pos[0] < 0){
-            this.pos[0] = 0;
-        }
-        if (this.pos[1] > GamePanel.SCREEN_HEIGHT){
-            this.pos[1] = GamePanel.SCREEN_HEIGHT;
-        }
-        if (this.pos[1] < 0){
-            this.pos[1] = 0;
         }
     }
 
