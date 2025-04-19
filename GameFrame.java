@@ -13,7 +13,7 @@ public class GameFrame extends JFrame{
     public static Thread thread;
 
     public GameFrame(){
-        super("King's Desperado");
+        super("Rover");
         thread = new Thread();
         panel = new GamePanel();
 

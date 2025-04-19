@@ -98,27 +98,24 @@ public class Player extends Entity{
     }
     public void move(){
         check_collision_with_platform();
-        for (Repulsion repulsion : GamePanel.repulsions){
-            repulsion.obj_vel_change(this);
-        }
-
-        // speed cap
-        if (this.vel[0] > 20){
-            this.vel[0] = 20;
-        }
-        if (this.vel[1] > 20){
-            this.vel[1] = 20;
-        }
-        if (this.vel[0] < -20){
-            this.vel[0] = -20;
-        }
-        if (this.vel[1] < -20){
-            this.vel[1] = -20;
-        }
-
+        
         // pos change
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
+
+        // speed cap
+        if (this.vel[0] > 10){
+            this.vel[0] = 10;
+        }
+        if (this.vel[1] > 10){
+            this.vel[1] = 10;
+        }
+        if (this.vel[0] < -10){
+            this.vel[0] = -10;
+        }
+        if (this.vel[1] < -10){
+            this.vel[1] = -10;
+        }
 
         // vel change
         this.vel[0] *= 0.99;
@@ -129,12 +126,12 @@ public class Player extends Entity{
         }
         if (this.jumping){
             this.falling = false;
-            this.vel[1] --;
+            this.vel[1] -= GamePanel.current_moon.gravity;
         } 
         if (this.falling){
-            this.vel[1] ++;
+            this.vel[1] += GamePanel.current_moon.gravity;
         }
-        if (this.jumping && this.vel[1] <= -12){
+        if (this.jumping && this.vel[1] <= -8){
             this.jumping = false;
             this.falling = true;
         }
@@ -146,17 +143,18 @@ public class Player extends Entity{
     }
     public void check_collision_with_platform(){
         boolean intersection = false;
-        for (Rectangle platform : GamePanel.platforms){
-            
-            if (platform.intersects(this.platform_hitbox)){
-                intersection = true;
-                if (this.vel[1] >= 0){
-                    this.on_ground = true;
-                    this.falling = false;
-                    if (this.vel[1] != 0){
-                        this.vel[1] = 0;
+        for (Tile[] row : GamePanel.current_moon.tilemap){
+            for (Tile col : row){
+                if (col.bounding_box.intersects(this.platform_hitbox)){
+                    intersection = true;
+                    if (this.vel[1] >= 0){
+                        this.on_ground = true;
+                        this.falling = false;
+                        if (this.vel[1] != 0){
+                            this.vel[1] = 0;
+                        }
+                        this.pos[1] = col.pos[1] - this.size/2 - 1;
                     }
-                    this.pos[1] = platform.y - this.size/2 - 1;
                 }
             }
         }

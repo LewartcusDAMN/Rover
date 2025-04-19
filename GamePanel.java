@@ -8,14 +8,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable{
     // Constants
-    public static final int SCREEN_WIDTH = 800, SCREEN_HEIGHT = 600;
+    public static final int SCREEN_WIDTH = 1200, SCREEN_HEIGHT = 1000;
 
     // Class objects
     private Thread thread;
@@ -25,10 +23,8 @@ public class GamePanel extends JPanel implements Runnable{
     public static KeyHandler key = new KeyHandler();
     private Menu menu;
     public static Player player;
+    public static Moon current_moon;
     
-    public static ArrayList<Rectangle> platforms;
-    public static ArrayList<Repulsion> repulsions;
-    public static ArrayList<Bullet> bullets;
 
     // Regular fields
     public int gamestate;
@@ -51,18 +47,8 @@ public class GamePanel extends JPanel implements Runnable{
         this.gamestate = 0;
         offset = new int[]{player.pos[0] - SCREEN_WIDTH/2, player.pos[1] - SCREEN_HEIGHT/2};
 
-        platforms = new ArrayList<>();
-        platforms.add(new Rectangle(0, 400, SCREEN_WIDTH, 200));
-        
-        platforms.add(new Rectangle(100, 370, 100, 20));
-        platforms.add(new Rectangle(150, 320, 100, 20));
-        
-        platforms.add(new Rectangle(200, 270, 100, 20));
-        platforms.add(new Rectangle(250, 220, 100, 20));
+        current_moon = new Moon("Experimentaion", 1);
 
-        repulsions = new ArrayList<>();
-
-        bullets = new ArrayList<>();
     }
 
     public void startGameThread(){// Starts the game loop
@@ -100,26 +86,8 @@ public class GamePanel extends JPanel implements Runnable{
             case 0 -> {
                 //Player
                 player.update();
-                if (mouse.left_click && !mouse.previous){
-                    bullets.add(new Bullet(player.pos[0], player.pos[1], 5, 10, player.angle));
-                }
-                // Repulsions
-                for (int i = repulsions.size() - 1; i >= 0; i --){
-                    repulsions.get(i).update();
-                    if (repulsions.get(i).radius <= 0){
-                        repulsions.remove(i);
-                    }
-                }
-                // Bullets
-                for (int i = bullets.size() - 1; i >= 0; i --){
-                    bullets.get(i).update();
-                    for (Rectangle platform : platforms){
-                        if (bullets.get(i).hitbox.intersects(platform)){
-                            repulsions.add(new Repulsion(40, bullets.get(i).pos[0], bullets.get(i).pos[1]));
-                            bullets.remove(i);
-                            break;
-                        }
-                    }
+                if (Utils.tile_at(mouse.pos[0] - offset[0], mouse.pos[1] - offset[1]) != null){
+                    System.out.printf("%d, %d \n", Utils.tile_at(mouse.pos[0] - offset[0], mouse.pos[1] - offset[1]).pos[0], Utils.tile_at(mouse.pos[0] - offset[0], mouse.pos[1] - offset[1]).pos[1]);
                 }
             }
         }
@@ -137,19 +105,15 @@ public class GamePanel extends JPanel implements Runnable{
             case 0 -> {// 
 
                 g2D.setColor(Color.gray);
-                for (Rectangle platform : platforms){
-                    g2D.fillRect(platform.x - GamePanel.offset[0], platform.y - GamePanel.offset[1], platform.width, platform.height);
+                for (Tile[] row : current_moon.tilemap){
+                    for (Tile col : row){
+                        g2D.setColor(Color.gray);
+                        g2D.fillRect(col.pos[0] - GamePanel.offset[0], col.pos[1] - GamePanel.offset[1], col.size, col.size);
+                        g2D.setColor(Color.BLACK);
+                        g2D.drawRect(col.pos[0] - GamePanel.offset[0], col.pos[1] - GamePanel.offset[1], col.size, col.size);
+                    }
                 }
 
-                for (Repulsion repulsion : repulsions){
-                    repulsion.draw(g2D);
-                }
-
-                for (Bullet bullet : bullets){
-                    bullet.draw(g2D);
-                }
-                Utils.renderText(g2D, "BINGOID","assets/MinimalPixelFont.ttf", 100, 255, 255, 255, 200 - offset[0], 150 - offset[1]);
-                
                 player.draw(g2D);
             }
         }
